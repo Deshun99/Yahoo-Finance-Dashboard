@@ -16,7 +16,7 @@ import yfinance as yf
 #####################################################
 # Part 2: Basic app information
 #####################################################
-app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(external_stylesheets=[dbc.themes.DARKLY])
 app.title = "Stock Analysis Dashboard"
 CONTENT_STYLE = {
     "margin-left": "18rem",
@@ -52,28 +52,24 @@ period_list = ["1d", "5d", "1wk", "1mo"]
 # Part 4: App layout
 #####################################################
 app.layout = html.Div([
-
+    
     html.H1('Stock Analysis Dashboard',style={"text-align": "center", "margin-bottom": "25px", "font-family":"Courier New"}),
-
-    html.Iframe(
-        src="https://www.youtube.com/embed/kqCdZK6V0t8", style={"display": "block", "margin": "25px auto", "width": "560px", "height": "315px"}
-    ),
 
     html.Div([html.Div([
         html.Div(dcc.Dropdown(
             id='genre-dropdown', value= symbols, clearable=False, multi=True,
             options=[{'label': x, 'value': x} for x in symbols]
-        ), className='six columns', style={"width": "70%"}, ),
+        ), className='six columns', style={"width": "55%", 'color': 'black'}, ),
 
         html.Div(dcc.Dropdown(
             id='sales-dropdown', value='Open', clearable=False,
             options=[{'label': x, 'value': x} for x in sales_list]
-        ), className='six columns', style={"width": "15%"}, ),
+        ), className='six columns', style={"width": "10%", 'color': 'black'},),
 
         html.Div(dcc.Dropdown(
             id='period-dropdown', value='1m', clearable=False,
             options=[{'label': x, 'value': x} for x in period_list]
-        ), className='six columns', style={"width": "15%"}, ),
+        ), className='six columns', style={"width": "10%", 'color': 'black'}, ),
 
         html.Div(dcc.DatePickerRange(
             id='my-date-picker-range',
@@ -88,21 +84,22 @@ app.layout = html.Div([
             initial_visible_month=date(2022,1,1),
             end_date=date.today(),
             updatemode='singledate',
-        ), className='six columns', style={"width": "40%", "marginTop": "10px"}, ),
-
-    
+        ), className='six columns', style={"width": "25%"}, ),
     ], className='row'), ], className='custom-dropdown'),
 
-    
-
-    html.Div([dcc.Graph(id='my-bar', figure={}, config={'displayModeBar': True, 'displaylogo': False,
+    html.Div([
+        html.Div([dcc.Graph(id='my-bar', figure={}, config={'displayModeBar': True, 'displaylogo': False,
                                                         'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d',
                                                                                    'zoomIn2d', 'zoomOut2d',
-                                                                                   'resetScale2d']}), ],style={'width': '1250px'}),
+                                                                                   'resetScale2d']}), ],style={'width': '1250px', "marginBottom": "10px"}),
 
-    html.Div(html.Div(id='table-container_1'), style={'marginBottom': '15px', 'marginTop': '0px', 'width': '1000px'}),], style=CONTENT_STYLE)
+        html.Div(html.Div(id='table-container_1'), style={'marginBottom': '15px', 'marginTop': '0px', 'width': '1250px'}),], style=CONTENT_STYLE),
 
-    
+        html.Iframe(
+        src="https://www.youtube.com/embed/kqCdZK6V0t8", style={"display": "block", "margin": "25px auto", "width": "560px", "height": "315px"}
+    ),
+    ], style={'textAlign': 'center'})
+
 
 #####################################################
 # Part 5: Callback to update the chart and table
@@ -132,15 +129,16 @@ def display_value(genre_chosen, sales_chosen, period_chosen, start_date, end_dat
                   template='ggplot2', width=1250, height=600)
 
     fig.update_layout(
-        xaxis=dict(showgrid=False, showline=True, linecolor="#17202A"),
-        yaxis=dict(showgrid=True, showline=True, linecolor="#17202A", gridcolor='#EAECEE'),
+        xaxis=dict(showgrid=False, showline=True, linecolor="#17202A", color='white'),
+        yaxis=dict(showgrid=True, showline=True, linecolor="#17202A", gridcolor='#EAECEE',color='white'),
         font=dict(
-            family="Times New Roman",
+            family="Montserrat",
             size=14,
+            color='white',
         ),
 
-        paper_bgcolor='white',
-        plot_bgcolor='white',
+        paper_bgcolor='black',
+        plot_bgcolor='black',
         xaxis_title="Day/Month (Calendar Year)",
         width=1055,
         legend_font_size=19,
@@ -150,27 +148,29 @@ def display_value(genre_chosen, sales_chosen, period_chosen, start_date, end_dat
     df_reshaped = dfv_fltrd.pivot(index='Symbol', columns='Calendar Year', values=sales_chosen)
     df_reshaped_2 = df_reshaped.reset_index()
 
+    table = dash_table.DataTable(
+    columns=[{"name": i, "id": i} for i in df_reshaped_2.columns],
+    data=df_reshaped_2.to_dict('records'),
+    export_format="csv",
+    style_as_list_view=True,
+    fill_width=True,
+    style_cell={
+        'font-size': '12px',
+        'backgroundColor': '#F8F9FA', # light gray
+        'color': 'black', # black text
+    },
+    style_table={
+        'maxWidth': 1055,
+        'backgroundColor': 'white', # white background
+        'color': 'black', # black text
+    },
+    style_header={
+        'backgroundColor': '#007BFF', # blue background
+        'color': 'black', # white text
+    },
+    )
 
-    return (fig,
-            dash_table.DataTable(columns=[{"name": i, "id": i} for i in df_reshaped_2.columns],
-                                 data=df_reshaped_2.to_dict('records'),
-                                 export_format="csv",
-                                 style_as_list_view=True,
-                                 fill_width=True,
-                                 style_cell={'font-size': '12px'},
-                                 style_table={'maxWidth': 1055},
-                                 style_header={'backgroundColor': 'black',
-                                               'color': 'white', },
-                                 style_data_conditional=[
-                                     {
-                                         'if': {
-                                             'row_index': 'even',
-                                             'filter': 'row_index >num(2)',
-                                         },
-                                         'backgroundColor': '#EBEDEF'
-                                     }, ]
-                                 ),
-)
+    return (fig, table)
 
 #####################################################
 # Part 6: Set up local server to show the dashboard
