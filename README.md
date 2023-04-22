@@ -5,6 +5,10 @@
   <h3 align="center">Stock Analysis Dashboard</h3>
 </div>
 
+## Project Overview:
+
+The objective of this project is to perform a stock analysis on the top 10 most active stocks in Singapore, to gain insights and make informed investment decisions based on the analysis .
+
 ## Codes and Resources Used
 
 **Python Version:** 3.9.10
@@ -46,39 +50,10 @@ The requirements.txt file contains Python libraries that your notebooks depend o
 pip install -r requirements.txt
 ```
 
-### _2. Google Colab Environment_
-
-Our deep learning models were primarily trained on [Google Colab Pro](https://colab.research.google.com) due to the access to high performance GPUs required for the training of complex neural network systems. 
-
-You can set up the Google Colab environment to run our model training codes by executing the following:
-
-```py
-from google.colab import drive
-drive.mount('/content/drive')
-content_path = "insert/path/to/your/data"
-```
-You will be prompted to log in with your Google Account. Simply replace the ```content_path``` with the path to directory where you have uploaded the data.
-
-Alternatively, if you do not wish to authenticate with your Google Account, you may simply run the following code to retrieve the data from a permanent link:
-
-```py
-train_path = 'https://drive.google.com/uc?export=download&id=1ZTfYOXeZLW57mLR7IegIFovi7FW1chS6'
-val_path = 'https://drive.google.com/uc?export=download&id=1ZMJI7DyKMLHpHp-HBUO64kWbP6A-qj9k'
-
-train_df = pd.read_csv(train_path)
-val_df = pd.read_csv(val_path)
-```
-
-The required additional modules required for each ```.ipynb``` notebook runned on Google Colab have been included in each notebook to be installed using ```pip```.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-## Source Layer
-
-```
-📦WebScrapper
- ┗ 📜reddit_scrapper.py
+### _2. Running On localhost_
+ 
+```sh
+python my_app.py
 ```
 
 ### Data Ingestion Sources
@@ -87,8 +62,4 @@ Our team extracted both structured and unstructred data from the following sourc
 
 | Source | Description | Size |
 | ----------- | ----------- | ----------- |
-| [Reddit](https://www.reddit.com/) | Extracted using the [PRAW API](https://praw.readthedocs.io/en/stable/) endpoint | 16828 |
-| [ChatGPT](https://chat.openai.com/chat) | Generated using ChatGPT 3.5 and 4 | 6043 |
-| Confounding Dataset | Manually created to include confounding and additional hate & ads | 26676 |
-
-### Reddit Scraper Agent
+| [Yahoo Finance](https://sg.finance.yahoo.com/) | Extracted using the [yfinance](https://pypi.org/project/yfinance/) API | 10 |
