@@ -62,4 +62,4 @@ Our team extracted both structured and unstructred data from the following sourc
 
 | Source | Description | Size |
 | ----------- | ----------- | ----------- |
-| [Yahoo Finance](https://sg.finance.yahoo.com/) | Extracted using the [yfinance](https://pypi.org/project/yfinance/) API | 10 |
+| [Yahoo Finance](https://sg.finance.yahoo.com/) | Extracted using the [yfinance](https://pypi.org/project/yfinance/) API | - |
