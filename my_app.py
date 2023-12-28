@@ -16,12 +16,10 @@ import yfinance as yf
 #####################################################
 # Part 2: Basic app information
 #####################################################
-app = dash.Dash(external_stylesheets=[dbc.themes.DARKLY])
+app = dash.Dash(external_stylesheets=[dbc.themes.LITERA])
 app.title = "Stock Analysis Dashboard"
 CONTENT_STYLE = {
-    "margin-left": "18rem",
-    "margin-right": "2rem",
-    "padding": "2rem 1rem",}
+    }
 
 #####################################################
 # Part 3: Data information
@@ -51,54 +49,111 @@ period_list = ["1d", "5d", "1wk", "1mo"]
 #####################################################
 # Part 4: App layout
 #####################################################
+
 app.layout = html.Div([
-    
-    html.H1('Stock Analysis Dashboard',style={"text-align": "center", "margin-bottom": "25px", "font-family":"Courier New"}),
-
-    html.Div([html.Div([
-        html.Div(dcc.Dropdown(
-            id='genre-dropdown', value= symbols, clearable=False, multi=True,
-            options=[{'label': x, 'value': x} for x in symbols]
-        ), className='six columns', style={"width": "55%", 'color': 'black'}, ),
-
-        html.Div(dcc.Dropdown(
-            id='sales-dropdown', value='Open', clearable=False,
-            options=[{'label': x, 'value': x} for x in sales_list]
-        ), className='six columns', style={"width": "10%", 'color': 'black'},),
-
-        html.Div(dcc.Dropdown(
-            id='period-dropdown', value='1m', clearable=False,
-            options=[{'label': x, 'value': x} for x in period_list]
-        ), className='six columns', style={"width": "10%", 'color': 'black'}, ),
-
-        html.Div(dcc.DatePickerRange(
-            id='my-date-picker-range',
-            start_date_placeholder_text='Start Date',
-            end_date_placeholder_text='End Date',
-            first_day_of_week = 0,
-            reopen_calendar_on_clear = True,
-            is_RTL = False,
-            clearable = True,
-            min_date_allowed=date(2000,1,1),
-            max_date_allowed=date.today(),
-            initial_visible_month=date(2022,1,1),
-            end_date=date.today(),
-            updatemode='singledate',
-        ), className='six columns', style={"width": "25%"}, ),
-    ], className='row'), ], className='custom-dropdown'),
-
-    html.Div([
-        html.Div([dcc.Graph(id='my-bar', figure={}, config={'displayModeBar': True, 'displaylogo': False,
-                                                        'modeBarButtonsToRemove': ['pan2d', 'lasso2d', 'select2d',
-                                                                                   'zoomIn2d', 'zoomOut2d',
-                                                                                   'resetScale2d']}), ],style={'width': '1250px', "marginBottom": "10px"}),
-
-        html.Div(html.Div(id='table-container_1'), style={'marginBottom': '15px', 'marginTop': '0px', 'width': '1250px'}),], style=CONTENT_STYLE),
-
-        html.Iframe(
-        src="https://www.youtube.com/embed/kqCdZK6V0t8", style={"display": "block", "margin": "25px auto", "width": "560px", "height": "315px"}
+    html.H1(
+        'Stock Analysis Dashboard',
+        style={
+            "text-align": "center",
+            "margin-bottom": "25px",
+            "font-family": "Calibiri",
+            "color": "white",
+            "padding-top": "20px"
+        }
     ),
-    ], style={'textAlign': 'center'})
+
+    # Two-column layout for dropdowns
+    html.Div(
+        [
+            # Column for genre-dropdown
+            html.Div(
+                dcc.Dropdown(
+                    id='genre-dropdown',
+                    value=symbols,
+                    clearable=False,
+                    multi=True,
+                    options=[{'label': x, 'value': x} for x in symbols],
+                ),
+                style={"width": "45%", "display": "inline-block", "vertical-align": "top"}
+            ),
+            
+            # Column for sales-dropdown, period-dropdown, and date picker range
+            html.Div(
+                [
+                    html.Div(
+                        dcc.Dropdown(
+                            id='sales-dropdown',
+                            value='Open',
+                            clearable=False,
+                            options=[{'label': x, 'value': x} for x in sales_list],
+                        ),
+                        style={"width": "48%", "display": "inline-block", "margin-right": "4%", 'color': 'black'}  # Adjusted width and added right margin
+                    ),
+                    html.Div(
+                        dcc.Dropdown(
+                            id='period-dropdown',
+                            value='1d',
+                            clearable=False,
+                            options=[{'label': x, 'value': x} for x in period_list],
+                        ),
+                        style={"width": "48%", "display": "inline-block", 'color': 'black'}  # Adjusted width
+                    ),
+                    dcc.DatePickerRange(
+                        id='my-date-picker-range',
+                        start_date_placeholder_text='Start Date',
+                        end_date_placeholder_text='End Date',
+                        first_day_of_week=0,
+                        reopen_calendar_on_clear=True,
+                        is_RTL=False,
+                        clearable=True,
+                        min_date_allowed=date(2000,1,1),
+                        max_date_allowed=date.today(),
+                        initial_visible_month=date(2022,1,1),
+                        start_date=date(2023, 1, 1),
+                        end_date=date.today(),
+                        updatemode='singledate',
+                        style={"width": "100%", "margin-top": "10px"}  # Added margin-top for spacing from the dropdowns
+                    ),
+                ],
+                style={"width": "45%", "display": "inline-block", "vertical-align": "top"}
+            ),
+        ],
+        style={'text-align': 'center', 'display': 'flex', 'justify-content': 'space-around', 'margin-bottom': '20px'}
+    ),
+
+    html.Div(
+        style={'width': '90%', 'margin': '0 auto', 'margin-bottom': '10px', 'overflow': 'hidden'},
+        children=[
+            dcc.Loading(
+                id="loading",
+                type="circle", 
+                children=[
+                    html.Div(
+                        dcc.Graph(id='my-bar', config={'displayModeBar': True, 'displaylogo': False}),
+                        style={'width': '100%', 'margin': '0 auto', 'margin-bottom': '10px'}
+                    ),
+                    html.Div(
+                        id='table-container_1',
+                        style={'width': '100%', 'margin': '0 auto', 'margin-bottom': '10px', 'overflowX': 'auto'}
+                    ),
+                ]
+            ),
+        ]
+    ),
+
+    # YouTube Iframe
+    html.Iframe(
+        src="https://www.youtube.com/embed/fE2h3lGlOsk",
+        style={
+            "display": "block",
+            "margin": "25px auto",
+            "width": "560px",
+            "height": "315px",
+            "border": "none",
+            "box-shadow": "0 2px 8px rgba(0, 0, 0, 0.1)"
+        }
+    )
+], style={'textAlign': 'center', 'width': '100%', 'max-width': '1200px', 'margin': '0 auto'})
 
 
 #####################################################
@@ -117,7 +172,7 @@ app.layout = html.Div([
 def display_value(genre_chosen, sales_chosen, period_chosen, start_date, end_date):
     
     df = get_stock_data(symbols,start_date,end_date,period_chosen)
-    
+    print("Dataframe head:", df.head())
     if len(genre_chosen) == 0:
         dfv_fltrd = df[df['Symbol'].isin(symbols)]
     else:
@@ -156,7 +211,7 @@ def display_value(genre_chosen, sales_chosen, period_chosen, start_date, end_dat
     fill_width=True,
     style_cell={
         'font-size': '12px',
-        'backgroundColor': '#F8F9FA', # light gray
+        'backgroundColor': '#D3D3D3', # light gray
         'color': 'black', # black text
     },
     style_table={
@@ -176,4 +231,4 @@ def display_value(genre_chosen, sales_chosen, period_chosen, start_date, end_dat
 # Part 6: Set up local server to show the dashboard
 #####################################################
 if __name__ == '__main__':
-    app.run_server(debug=False, port=8008)
+    app.run_server(debug=True, port=8008)
