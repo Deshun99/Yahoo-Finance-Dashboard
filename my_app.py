@@ -24,8 +24,7 @@ CONTENT_STYLE = {
 #####################################################
 # Part 3: Data information
 #####################################################
-symbols = ['D05.SI', 'U11.SI', 'O39.SI','Z74.SI', 'F34.SI', 'C38U.SI', 'C6L.SI', 'V03.SI', 'BN4.SI']
-# ["AMZN", "TSLA", "MSFT", "AAPL", "GOOGL"]
+symbols = ['D05.SI', 'U11.SI', 'O39.SI','Z74.SI', 'F34.SI', 'C38U.SI', 'C6L.SI', 'V03.SI', 'BN4.SI',"AMZN", "TSLA", "MSFT", "AAPL", "GOOGL"]
 
 sales_list = ["Open", "High", "Low", "Close","Adj Close", "Volume"]
 
@@ -69,12 +68,12 @@ app.layout = html.Div([
             html.Div(
                 dcc.Dropdown(
                     id='genre-dropdown',
-                    value=symbols,
+                    value=['D05.SI', 'U11.SI', 'O39.SI','Z74.SI', 'F34.SI', 'C38U.SI', 'C6L.SI', 'V03.SI', 'BN4.SI'],
                     clearable=False,
                     multi=True,
                     options=[{'label': x, 'value': x} for x in symbols],
                 ),
-                style={"width": "45%", "display": "inline-block", "vertical-align": "top"}
+                style={"width": "45%", "display": "inline-block", "vertical-align": "top", 'color': 'black'}
             ),
             
             # Column for sales-dropdown, period-dropdown, and date picker range
